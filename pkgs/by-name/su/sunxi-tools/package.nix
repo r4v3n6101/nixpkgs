@@ -27,6 +27,11 @@ stdenv.mkDerivation {
     zlib
   ];
 
+  postPatch = lib.optionalString stdenv.hostPlatform.isDarwin ''
+    substituteInPlace Makefile \
+      --replace-fail './autoversion.sh >' '$(SHELL) ./autoversion.sh >'
+  '';
+
   makeFlags = [ "PREFIX=$(out)" ];
 
   buildFlags = [
@@ -45,7 +50,7 @@ stdenv.mkDerivation {
     description = "Tools for Allwinner SoC devices";
     homepage = "http://linux-sunxi.org/";
     license = lib.licenses.gpl2Plus;
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.linux ++ lib.platforms.darwin;
     maintainers = [ ];
   };
 }
